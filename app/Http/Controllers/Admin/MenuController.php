@@ -1,0 +1,83 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\Cart;
+use App\Models\Menu;
+use Illuminate\Http\Request;
+
+class MenuController extends Controller
+{
+    public function index()
+    {
+        $data = [
+            'menus' => Menu::all(),
+        ];
+        return view('pages.admin.menu.index', $data);
+    }
+
+    public function create()
+    {
+        return view('pages.admin.menu.create');
+    }
+
+    public function store(Request $request)
+    {
+        $rules = [
+            'name' => 'required|string',
+            'price' => 'required|integer',
+            'description' => 'string|nullable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg',
+        ];
+        $validated = $request->validate($rules);
+
+        if ($validated) {
+            if ($request->hasFile('image')) {
+                $validated['image'] = $request->file('image')->store('images', 'public');
+            }
+            Menu::create($validated);
+        }
+
+        return redirect()->route('admin.menu.index');
+    }
+
+    public function edit($id)
+    {
+        $data = [
+            'menu' => Menu::find($id),
+        ];
+        return view('pages.admin.menu.edit', $data);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $rules = [
+            'name' => 'required|string',
+            'price' => 'required|integer',
+            'description' => 'string|nullable',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg',
+        ];
+        $validated = $request->validate($rules);
+
+        if ($validated) {
+            $menu = Menu::find($id);
+            $menu->name = $validated['name'];
+            $menu->price = $validated['price'];
+            $menu->description = $validated['description'];
+            if ($request->hasFile('image')) {
+                $menu->image = $request->file('image')->store('images', 'public');
+            }
+            $menu->save();
+        }
+
+        return redirect()->route('admin.menu.index');
+    }
+
+    public function destroy($id)
+    {
+        Menu::destroy($id);
+        Cart::where('menu_id', $id)->delete();
+        return redirect()->route('admin.menu.index');
+    }
+}
