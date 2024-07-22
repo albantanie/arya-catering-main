@@ -5,10 +5,10 @@
     <div class="row">
         <div class="col-8">
             @foreach ($carts as $cart)
-                <div class="row w-100">
+                <div class="row w-100 mb-3 align-items-center">
                     <div class="col-1">
-                        <img src="https://placehold.co/50" alt="#" width="50" height="50"
-                            class="border border-black">
+                        <img src="/storage/{{ $cart->menu->image }}" alt="{{ $cart->menu->name }}" width="50" height="50"
+                            class="border border-black rounded">
                     </div>
                     <div class="col-7">
                         <h5>{{ $cart->menu->name }}</h5>
@@ -21,8 +21,9 @@
                         <h6>Rp{{ number_format($cart->menu->price * $cart->amount, 2, ',', '.') }}</h6>
                     </div>
                     <div class="col-1">
-                        <a href="{{ route('cart.delete', $cart->id) }}" onclick="return confirm('Delete?')"><i
-                                class="bi bi-trash text-danger"></i></a>
+                        <a href="{{ route('cart.delete', $cart->id) }}" onclick="return confirm('Delete?')">
+                            <i class="bi bi-trash text-danger"></i>
+                        </a>
                     </div>
                 </div>
             @endforeach
@@ -88,7 +89,8 @@
                     <p class="text-body-secondary">
                         Jl. Rawa Badak Selatan No.90 <br>
                         Gading Serpong, Tangerang Selatan <br>
-                        Prov. Banten 15415</p>
+                        Prov. Banten 15415
+                    </p>
                 </div>
                 <div class="mt-4">
                     <h5>Pilih Metode Pembayaran</h5>
@@ -106,8 +108,7 @@
                     <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}">
                     <input type="hidden" name="total_price" id="total_price" value="{{ $total }}">
                     <input type="hidden" name="menu" id="menu" value="{{ json_encode($carts) }}">
-                    <button type="submit" class="btn btn-secondary w-100" onclick="return confirm('Bayar?')">Lanjut ke
-                        pembayaran</button>
+                    <button type="submit" class="btn btn-secondary w-100" onclick="return confirm('Bayar?')">Lanjut ke pembayaran</button>
                 </form>
             </div>
         </div>

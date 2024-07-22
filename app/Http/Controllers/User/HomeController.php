@@ -8,12 +8,17 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $menus = Menu::all();
-        $data = [
-            'menus' => $menus
-        ];
-        return view('pages.user.menu.index', $data);
+        // Search query
+        $search = $request->input('search');
+        
+        // Fetch menus with pagination and search
+        $menus = Menu::when($search, function ($query, $search) {
+            return $query->where('name', 'like', "%{$search}%");
+        })->paginate(8); // Adjust the number of items per page as needed
+        
+        return view('pages.user.menu.index', compact('menus', 'search'));
     }
 }
+
