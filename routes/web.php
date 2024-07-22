@@ -11,21 +11,24 @@ Route::namespace('App\Http\Controllers')->group(function () {
     Route::get('/register', 'RegisterController@index')->name('register');
     Route::post('/register', 'RegisterController@store')->name('register.store');
 
+    // Authenticated routes
     Route::middleware('auth')->group(function () {
         Route::get('/logout', 'LoginController@logout')->name('logout');
 
-        Route::namespace('User')->prefix('user')->group(function () {
-            Route::get('/', 'HomeController@index')->name('index');
+        // User routes
+        Route::middleware('isUser')->namespace('User')->prefix('user')->group(function () {
+            Route::get('/', 'HomeController@index')->name('user.index');
 
-            Route::get('/transaction', 'TransactionController@index')->name('transaction.index');
-            Route::post('/transaction', 'TransactionController@store')->name('transaction.store');
+            Route::get('/transaction', 'TransactionController@index')->name('user.transaction.index');
+            Route::post('/transaction', 'TransactionController@store')->name('user.transaction.store');
 
-            Route::get('/cart', 'CartController@index')->name('cart.index');
-            Route::post('/cart', 'CartController@add')->name('cart.add');
-            Route::get('/cart/delete/{id}', 'CartController@delete')->name('cart.delete');
+            Route::get('/cart', 'CartController@index')->name('user.cart.index');
+            Route::post('/cart', 'CartController@add')->name('user.cart.add');
+            Route::get('/cart/delete/{id}', 'CartController@delete')->name('user.cart.delete');
         });
 
-        Route::namespace('Admin')->prefix('admin')->group(function () {
+        // Admin routes
+        Route::middleware(['isAdmin'])->namespace('Admin')->prefix('admin')->group(function () {
             Route::get('/', 'HomeController@index')->name('admin.index');
 
             Route::get('/menu', 'MenuController@index')->name('admin.menu.index');

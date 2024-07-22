@@ -103,7 +103,7 @@
                         <label class="btn btn-outline-dark w-100 text-start" for="transfer">Transfer Bank</label>
                     </div>
                 </div>
-                <form action="{{ route('transaction.store') }}" method="POST" class="mt-4">
+                <form action="{{ route('user.transaction.store') }}" method="POST" class="mt-4">
                     @csrf
                     <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}">
                     <input type="hidden" name="total_price" id="total_price" value="{{ $total }}">

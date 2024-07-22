@@ -5,7 +5,7 @@
     <div class="container">
         <!-- Search Form -->
         <div class="mb-4">
-            <form action="{{ route('index') }}" method="GET" class="search-form">
+            <form action="{{ route('user.index') }}" method="GET" class="search-form">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search for a menu item" value="{{ request('search') }}">
                     <button type="submit" class="btn btn-primary">Search</button>
@@ -20,7 +20,7 @@
                         <div class="card-body d-flex flex-column">
                             <h6 class="card-title text-truncate">{{ $menu->name }}</h6>
                             <p class="card-text text-primary fw-bold mt-auto mb-2">Rp{{ number_format($menu->price, 2, ',', '.') }}</p>
-                            <form class="add-to-cart-form" action="{{ route('cart.add') }}" method="POST">
+                            <form class="add-to-cart-form" action="{{ route('user.cart.add') }}" method="POST">
                                 @csrf
                                 @auth
                                 <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}">
