@@ -9,14 +9,19 @@ use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = [
-            'menus' => Menu::all(),
-        ];
-        return view('pages.admin.menu.index', $data);
+        $search = $request->input('search');
+    
+        $menus = Menu::when($search, function ($query, $search) {
+            return $query->where('name', 'like', "%{$search}%");
+        })->paginate(8); // Ensure this returns a LengthAwarePaginator instance
+    
+        return view('pages.admin.menu.index', [
+            'menus' => $menus,
+            'search' => $search
+        ]);
     }
-
     public function create()
     {
         return view('pages.admin.menu.create');

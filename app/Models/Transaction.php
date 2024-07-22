@@ -14,4 +14,11 @@ class Transaction extends Model
     protected $casts = [
         'menu' => 'array',
     ];
+
+    // Define the relationship to the User model
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
+
