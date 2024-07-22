@@ -1,4 +1,6 @@
 @extends('layouts.main')
+@include('sweetalert::alert')
+
 
 @section('body')
     <nav class="navbar navbar-expand-lg bg-body-tertiary">

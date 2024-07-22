@@ -20,7 +20,7 @@
                         <div class="card-body d-flex flex-column">
                             <h6 class="card-title text-truncate">{{ $menu->name }}</h6>
                             <p class="card-text text-primary fw-bold mt-auto mb-2">Rp{{ number_format($menu->price, 2, ',', '.') }}</p>
-                            <form class="add-to-cart-form" action="{{ route('user.cart.add') }}" method="POST">
+                        <form class="add-to-cart-form" action="{{ route('user.cart.add') }}" method="POST">
                                 @csrf
                                 @auth
                                 <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}">
@@ -73,18 +73,33 @@
         margin: auto;
     }
 </style>
+
 @if (!auth()->check())
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const cartForms = document.querySelectorAll('.add-to-cart-form');
             cartForms.forEach(form => {
                 form.addEventListener('submit', function(event) {
                     event.preventDefault();
-                    // Redirect to login with a message
-                    window.location.href = "{{ route('login') }}?redirect=" + encodeURIComponent(window.location.href) + "&message=You need to log in first.";
+                    // Show SweetAlert confirmation
+                    Swal.fire({
+                        title: 'Login Required',
+                        text: 'You need to log in first to add items to your cart.',
+                        icon: 'info',
+                        showCancelButton: true,
+                        confirmButtonText: 'Login',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Redirect to login page
+                            window.location.href = "{{ route('login') }}?redirect=" + encodeURIComponent(window.location.href);
+                        }
+                    });
                 });
             });
         });
     </script>
 @endif
+
 @endsection

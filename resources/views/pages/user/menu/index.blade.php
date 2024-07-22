@@ -73,6 +73,7 @@
         margin: auto;
     }
 </style>
+
 @if (!auth()->check())
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -87,4 +88,32 @@
         });
     </script>
 @endif
+@endsection
+
+@section('scripts')
+<!-- SweetAlert JS (already included in layout) -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const forms = document.querySelectorAll('.add-to-cart-form');
+        
+        forms.forEach(form => {
+            form.addEventListener('submit', event => {
+                event.preventDefault();
+
+                Swal.fire({
+                    title: 'Add to Cart',
+                    text: 'Are you sure you want to add this item to the cart?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, add it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
 @endsection

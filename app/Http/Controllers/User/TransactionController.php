@@ -34,6 +34,6 @@ class TransactionController extends Controller
             Cart::where('user_id', auth()->user()->id)->delete();
         }
 
-        return redirect()->route('index');
+        return redirect()->route('user.index');
     }
 }

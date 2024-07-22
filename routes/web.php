@@ -1,9 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use RealRashid\SweetAlert\Facades\Alert;
 
 Route::namespace('App\Http\Controllers')->group(function () {
-    Route::get('/', 'HomeController@index')->name('home');
+    Route::get('/', function () {
+        Alert::success('Success Title', 'Success Message');
+        return redirect()->route('home');
+    });
+
+    Route::get('/home', 'HomeController@index')->name('home');
 
     Route::get('/login', 'LoginController@index')->name('login');
     Route::post('/login', 'LoginController@authenticate')->name('login.authenticate');
@@ -39,6 +45,8 @@ Route::namespace('App\Http\Controllers')->group(function () {
             Route::get('/menu/delete/{id}', 'MenuController@destroy')->name('admin.menu.delete');
 
             Route::get('/transaction', 'TransactionController@index')->name('admin.transaction.index');
+            Route::post('/transaction/approve/{id}', 'TransactionController@approve')->name('admin.transaction.approve');
+            Route::post('/transaction/reject/{id}', 'TransactionController@reject')->name('admin.transaction.reject');
         });
     });
 });

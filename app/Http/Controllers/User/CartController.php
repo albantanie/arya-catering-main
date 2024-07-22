@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use Illuminate\Http\Request;
+use Alert; // Use the facade
 
 class CartController extends Controller
 {
@@ -31,19 +32,30 @@ class CartController extends Controller
                 $cart = Cart::where('user_id', $validated['user_id'])->where('menu_id', $validated['menu_id'])->first();
                 $cart->amount += $validated['amount'];
                 $cart->save();
+                
+                Alert::success('Success', 'Item quantity updated in your cart.'); // Use the facade
             } else {
                 Cart::create($validated);
+                
+                Alert::success('Success', 'Item added to your cart.'); // Use the facade
             }
         }
 
-        return redirect()->route('index');
+        return redirect()->route('user.index');
     }
 
     public function delete($id)
     {
         $cart = Cart::find($id);
+    
+        if (!$cart) {
+            Alert::error('Error', 'Cart item not found.'); // Use the facade
+            return redirect()->route('user.cart.index');
+        }
+    
         $cart->delete();
-
-        return redirect()->route('cart.index');
+    
+        Alert::success('Success', 'Cart item deleted successfully.'); // Use the facade
+        return redirect()->route('user.cart.index');
     }
 }

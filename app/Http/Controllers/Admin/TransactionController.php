@@ -10,31 +10,33 @@ class TransactionController extends Controller
 {
     public function index()
     {
-        $data = [
-            'transactions' => Transaction::all(),
-        ];
-        return view('pages.admin.transaction.index', $data);
+        $transactions = Transaction::all();
+        return view('pages.admin.transaction.index', compact('transactions'));
     }
 
     public function approve($id)
     {
         $transaction = Transaction::find($id);
+        
         if ($transaction) {
             $transaction->status = 'APPROVED';
             $transaction->save();
+            return redirect()->route('admin.transaction.index')->with('success', 'Transaction approved successfully.');
         }
 
-        return redirect()->route('admin.transaction.index')->with('success', 'Transaction approved successfully.');
+        return redirect()->route('admin.transaction.index')->with('error', 'Transaction not found.');
     }
 
     public function reject($id)
     {
         $transaction = Transaction::find($id);
+
         if ($transaction) {
             $transaction->status = 'REJECTED';
             $transaction->save();
+            return redirect()->route('admin.transaction.index')->with('success', 'Transaction rejected successfully.');
         }
 
-        return redirect()->route('admin.transaction.index')->with('success', 'Transaction rejected successfully.');
+        return redirect()->route('admin.transaction.index')->with('error', 'Transaction not found.');
     }
 }
