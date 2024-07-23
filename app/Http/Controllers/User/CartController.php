@@ -47,15 +47,9 @@ class CartController extends Controller
     public function delete($id)
     {
         $cart = Cart::find($id);
-    
-        if (!$cart) {
-            Alert::error('Error', 'Cart item not found.'); // Use the facade
-            return redirect()->route('user.cart.index');
-        }
-    
         $cart->delete();
-    
-        Alert::success('Success', 'Cart item deleted successfully.'); // Use the facade
+
         return redirect()->route('user.cart.index');
     }
+    
 }

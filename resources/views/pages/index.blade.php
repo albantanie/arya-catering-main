@@ -7,14 +7,12 @@
         <div class="mb-4">
             <form action="{{ route('user.index') }}" method="GET" class="search-form">
                 <div class="input-group">
-                    <form class="d-flex mx-auto" action="{{route('user.index')}}" role="search">
-                        <input class="form-control" type="search" placeholder="Search for a menu item" aria-label="Search">
-                        <button class="btn btn-outline-success" value="{{ request('search') }}" type="submit">Search</button>
-                    </form>
+                    <input class="form-control" type="search" placeholder="Cari menu" aria-label="Search" name="search" value="{{ request('search') }}">
+                    <button class="btn btn-outline-success" type="submit">Cari</button>
                 </div>
             </form>
         </div>
-        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             @foreach ($menus as $menu)
                 <div class="col">
                     <div class="card h-100 border-0 shadow">
@@ -31,7 +29,7 @@
                                 <div class="d-flex align-items-center">
                                     <input type="number" name="amount" class="form-control form-control-sm me-2" min="1" placeholder="Qty" required>
                                     <button type="submit" class="btn btn-sm btn-success flex-grow-1">
-                                        <i class="fas fa-cart-plus me-1"></i> Add to Cart
+                                        <i class="fas fa-cart-plus me-1"></i> Tambahkan ke Keranjang
                                     </button>
                                 </div>
                             </form>
@@ -60,13 +58,14 @@
         margin: 0;
     }
     .pagination .page-item.active .page-link {
-      
+        background-color: #0d6efd;
+        border-color: #0d6efd;
     }
     .pagination .page-link {
         border-radius: 0.25rem;
     }
     .pagination .page-link, .pagination .page-item.disabled .page-link {
-       
+        color: #6c757d;
     }
     .search-form {
         max-width: 400px;
@@ -86,12 +85,12 @@
                 form.addEventListener('submit', function(event) {
                     event.preventDefault();
                     Swal.fire({
-                        title: 'Login Required',
-                        text: 'You need to log in first',
+                        title: 'Login Diperlukan',
+                        text: 'Anda harus login terlebih dahulu',
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonText: 'Login',
-                        cancelButtonText: 'Cancel'
+                        cancelButtonText: 'Batal'
                     }).then((result) => {
                         if (result.isConfirmed) {
                             window.location.href = "{{ route('login') }}?redirect=" + encodeURIComponent(window.location.href);
@@ -104,12 +103,12 @@
             searchForm.addEventListener('submit', function(event) {
                 event.preventDefault();
                 Swal.fire({
-                    title: 'Login Required',
-                    text: 'You need to log in first',
+                    title: 'Login Diperlukan',
+                    text: 'Anda harus login terlebih dahulu',
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonText: 'Login',
-                    cancelButtonText: 'Cancel'
+                    cancelButtonText: 'Batal'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.href = "{{ route('login') }}?redirect=" + encodeURIComponent(window.location.href);
@@ -119,5 +118,7 @@
         });
     </script>
 @endif
+
+
 
 @endsection

@@ -14,14 +14,14 @@
         <div class="mb-4">
             <form action="{{ route('admin.menu.index') }}" method="GET" class="search-form">
                 <div class="input-group">
-                    <input type="text" name="search" class="form-control" placeholder="Search for a menu item" value="{{ $search ?? '' }}">
-                    <button type="submit" class="btn btn-outline-success border-1">Search</button>
+                    <input type="text" name="search" class="form-control" placeholder="Cari menu" value="{{ $search ?? '' }}">
+                    <button type="submit" class="btn btn-outline-success border-1">Cari</button>
                 </div>
             </form>
         </div>
 
         <!-- Menu Items -->
-        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             @forelse ($menus as $menu)
                 <div class="col">
                     <div class="card h-100 border-0 shadow-sm">
@@ -42,7 +42,7 @@
                 </div>
             @empty
                 <div class="col-12">
-                    <p class="text-center">No menus found.</p>
+                    <p class="text-center">Tidak ada menu yang ditemukan.</p>
                 </div>
             @endforelse
         </div>
@@ -81,19 +81,19 @@
 <script>
     function confirmDelete(url) {
         Swal.fire({
-            title: 'Are you sure?',
-            text: 'Do you really want to delete this menu item?',
+            title: 'Apakah Anda yakin?',
+            text: 'Anda benar-benar ingin menghapus menu ini?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire(
-                    'Deleted!',
-                    'The menu item has been deleted.',
+                    'Terhapus!',
+                    'Menu telah dihapus.',
                     'success'
                 ).then(() => {
                     window.location.href = url;

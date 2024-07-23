@@ -1,7 +1,7 @@
 @extends('layouts.user')
 
 @section('content')
-<div class="container-fluid py-4" >
+<div class="container-fluid py-4">
     <div class="container">
         <!-- Search Form -->
         <div class="mb-4">
@@ -12,7 +12,7 @@
                 </div>
             </form>
         </div>
-        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             @foreach ($menus as $menu)
                 <div class="col">
                     <div class="card h-100 shadow">

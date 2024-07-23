@@ -15,7 +15,7 @@ class HomeController extends Controller
         // Fetch menus with search and pagination
         $menus = Menu::when($search, function ($query, $search) {
             return $query->where('name', 'like', "%{$search}%");
-        })->paginate(8); // Adjust pagination as needed
+        })->paginate(8); 
 
 
       

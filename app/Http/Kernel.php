@@ -1,6 +1,5 @@
 <?php
 
-// app/Http/Kernel.php
 
 namespace App\Http;
 
@@ -52,7 +51,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
 
         // Custom middleware
-        // 'role' => \App\Http\Middleware\RoleMiddleware::class,
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'user' => \App\Http\Middleware\UserMiddleware::class,
     ];

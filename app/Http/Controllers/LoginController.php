@@ -33,6 +33,7 @@ class LoginController extends Controller
             // Set a success flash message
             $request->session()->flash('login_success', 'Login successful! Welcome back.');
 
+
             // Redirect based on user role
             if ($user->role_id === 1) { // Assuming 1 is the role_id for admin
                 return redirect()->route('admin.index')->with('login_success', 'Login berhasil');
@@ -46,10 +47,9 @@ class LoginController extends Controller
             }
         }
 
-        // Authentication failed, redirect back with an error message
         return back()->withErrors([
             'email' => 'Maaf, email atau password salah.',
-        ])->withInput('email');
+        ])->onlyInput('email');
     }
 
     /**
@@ -66,5 +66,6 @@ class LoginController extends Controller
 
         // Redirect to the home page with a logout success message
         return redirect('/')->with('logout_success', 'You have been logged out successfully.');
+
     }
 }

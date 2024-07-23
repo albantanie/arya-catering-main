@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.user')
 
 @section('head')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -13,61 +13,48 @@
 @endsection
 
 @section('content')
-    <h3>Daftar Transaksi</h3>
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-    <div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>User</th>
-                    <th>Menu</th>
-                    <th>Total</th>
-                    <th>Status</th>
-                    <th>Bukti Pembayaran</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php $counter = 1; @endphp <!-- Initialize counter -->
-                @foreach ($transactions as $transaction)
-                    @foreach (json_decode($transaction->menu) as $item)
-                        <tr>
-                            <td>{{ $counter++ }}</td> <!-- Display sequential number -->
-                            <td>{{ $transaction->user->name }}</td>
-                            <td>{{ $item->menu->name }}</td>
-                            <td>Rp{{ number_format($item->menu->price * $item->amount, 2, ',', '.') }}</td>
-                            <td>{{ $transaction->status }}</td>
-                            <td>
-                                @if ($transaction->payment_proof)
-                                    <img src="{{ asset('storage/' . $transaction->payment_proof) }}" alt="Bukti Pembayaran" width="100" class="img-thumbnail payment-proof" data-toggle="modal" data-target="#imageModal" data-src="{{ asset('storage/' . $transaction->payment_proof) }}">
-                                @else
-                                    <span class="text-muted">Belum ada bukti pembayaran</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if ($transaction->status === 'PENDING')
-                                    <form action="{{ route('admin.transaction.approve', $transaction->id) }}" method="POST" class="d-inline-block">
-                                        @csrf
-                                        <button type="button" class="btn btn-success approve-btn" data-id="{{ $transaction->id }}">Approve</button>
-                                    </form>
-                                    <form action="{{ route('admin.transaction.reject', $transaction->id) }}" method="POST" class="d-inline-block">
-                                        @csrf
-                                        <button type="button" class="btn btn-danger reject-btn" data-id="{{ $transaction->id }}">Reject</button>
-                                    </form>
-                                @else
-                                    {{ $transaction->status }}
-                                @endif
-                            </td>
-                        </tr>
+    <div class="container-fluid py-4">
+        <h3>Daftar Transaksi</h3>
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>No</th>
+                        <th>User</th>
+                        <th>Menu</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Bukti Pembayaran</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @php $counter = 1; @endphp <!-- Initialize counter -->
+                    @foreach ($transactions as $transaction)
+                        @foreach (json_decode($transaction->menu) as $item)
+                            <tr>
+                                <td>{{ $counter++ }}</td> <!-- Display sequential number -->
+                                <td>{{ $transaction->user->name }}</td>
+                                <td>{{ $item->menu->name }}</td>
+                                <td>Rp{{ number_format($item->menu->price * $item->amount, 2, ',', '.') }}</td>
+                                <td>{{ $transaction->status }}</td>
+                                <td>
+                                    @if ($transaction->payment_proof)
+                                        <img src="{{ asset('storage/' . $transaction->payment_proof) }}" alt="Bukti Pembayaran" width="100" class="img-thumbnail payment-proof" data-toggle="modal" data-target="#imageModal" data-src="{{ asset('storage/' . $transaction->payment_proof) }}">
+                                    @else
+                                        <span class="text-muted">Belum ada bukti pembayaran</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
                     @endforeach
-                @endforeach
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Modal for image preview -->
