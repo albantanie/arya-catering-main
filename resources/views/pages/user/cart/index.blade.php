@@ -1,7 +1,24 @@
 @extends('layouts.user')
 
+@section('head')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+@endsection
+
 @section('content')
     <h3>Keranjang</h3>
+    
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+    
     <div class="row">
         <div class="col-8">
             @foreach ($carts as $cart)
@@ -21,8 +38,8 @@
                         <h6>Rp{{ number_format($cart->menu->price * $cart->amount, 2, ',', '.') }}</h6>
                     </div>
                     <div class="col-1">
-                        <a href="{{ route('cart.delete', $cart->id) }}" onclick="return confirm('Delete?')">
-                            <i class="bi bi-trash text-danger"></i>
+                        <a href="#" class="text-danger remove-item" data-url="{{ route('user.cart.delete', $cart->id) }}">
+                            <i class="bi bi-trash"></i>
                         </a>
                     </div>
                 </div>
@@ -103,14 +120,64 @@
                         <label class="btn btn-outline-dark w-100 text-start" for="transfer">Transfer Bank</label>
                     </div>
                 </div>
-                <form action="{{ route('transaction.store') }}" method="POST" class="mt-4">
+                <form id="checkout-form" action="{{ route('user.transaction.store') }}" method="POST" class="mt-4">
                     @csrf
                     <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}">
                     <input type="hidden" name="total_price" id="total_price" value="{{ $total }}">
                     <input type="hidden" name="menu" id="menu" value="{{ json_encode($carts) }}">
-                    <button type="submit" class="btn btn-secondary w-100" onclick="return confirm('Bayar?')">Lanjut ke pembayaran</button>
+                    <button type="submit" class="btn btn-secondary w-100">Lanjut ke pembayaran</button>
                 </form>
             </div>
         </div>
     </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Handle item removal confirmation
+        document.querySelectorAll('.remove-item').forEach(item => {
+            item.addEventListener('click', function(event) {
+                event.preventDefault();
+                const url = this.getAttribute('data-url');
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Anda yakin ingin menghapus item ini dari keranjang?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire('Berhasil', 'Item berhasil dihapus dari keranjang', 'success')
+                            .then(() => {
+                                window.location.href = url;
+                            });
+                    }
+                });
+            });
+        });
+
+        // Handle checkout confirmation
+        document.getElementById('checkout-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Konfirmasi',
+                text: 'Anda yakin akan melanjutkan ke pembayaran?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Lanjutkan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire('Berhasil', 'Anda akan dialihkan ke halaman pembayaran', 'success')
+                        .then(() => {
+                    this.submit();
+                });
+                }
+            });
+        });
+    });
+</script>
+
 @endsection

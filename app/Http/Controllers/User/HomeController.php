@@ -20,5 +20,11 @@ class HomeController extends Controller
         
         return view('pages.user.menu.index', compact('menus', 'search'));
     }
+
+    public function show($id)
+    {
+        $menu = Menu::find($id);
+        return view('pages.user.menu.show', compact('menu'));
+    }
 }
 

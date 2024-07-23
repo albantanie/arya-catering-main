@@ -10,7 +10,7 @@
                         <div class="col-12">
                             <div class="text-center mb-5">
                                 <a href="{{ route('home') }}">
-                                    <img src="./assets/img/bsb-logo.svg" alt="Logo" width="175" height="57">
+                                    <img src="/photos/logo-dummy.png" alt="Logo" width="175" height="100%">
                                 </a>
                             </div>
                         </div>
@@ -54,7 +54,7 @@
                             </div>
                             <div class="col-12">
                                 <div class="d-grid">
-                                    <button class="btn btn-primary btn-lg" type="submit">REGISTER</button>
+                                    <button class="btn btn-primary btn-lg" type="submit">Register</button>
                                 </div>
                             </div>
                         </div>

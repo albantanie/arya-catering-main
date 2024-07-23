@@ -12,6 +12,9 @@
         align-items: center;
     }
 </style>
+
+<!-- SweetAlert CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 @endsection
 
 @section('body')
@@ -24,10 +27,10 @@
                         <div class="col-12">
                             <div class="text-center mb-5">
                                 <a href="{{ route('home') }}">
-                                    <img src="./assets/img/bsb-logo.svg" alt="Logo" width="175" height="57">
+                                    <img src="/photos/logo-dummy.png" alt="Logo" width="175" height="100%">
                                 </a>
                             </div>
-                        </div>ac
+                        </div>
                     </div>
                     <form action="{{ route('login.authenticate') }}" method="POST">
                         @csrf
@@ -76,4 +79,41 @@
         </div>
     </div>
 </div>
+
+<!-- SweetAlert JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+
+@if(session('login_success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: '{{ session('login_success') }}',
+        showConfirmButton: true
+    });
+</script>
+@endif
+
+@if(session('logout_success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Logged Out',
+        text: '{{ session('logout_success') }}',
+        showConfirmButton: true
+    });
+</script>
+@endif
+
+@if($errors->any())
+<script>
+    Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '{{ $errors->first() }}',
+        showConfirmButton: true
+    });
+</script>
+@endif
 @endsection

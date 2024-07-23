@@ -1,18 +1,21 @@
 @extends('layouts.admin')
 
+@section('head')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+@endsection
+
 @section('content')
-<div class="container-fluid py-4" style="background-color: #f3f4f5;">
+<div class="container-fluid py-4">
     <div class="container">
         <!-- Add Menu Button -->
         <a href="{{ route('admin.menu.create') }}" class="btn btn-success mb-3">Tambah Menu</a>
-        <hr>
 
         <!-- Search Form -->
         <div class="mb-4">
             <form action="{{ route('admin.menu.index') }}" method="GET" class="search-form">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search for a menu item" value="{{ $search ?? '' }}">
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button type="submit" class="btn btn-outline-success border-1">Search</button>
                 </div>
             </form>
         </div>
@@ -27,12 +30,12 @@
                             <h6 class="card-title text-truncate">{{ $menu->name }}</h6>
                             <p class="card-text text-primary fw-bold mt-auto mb-2">Rp{{ number_format($menu->price, 2, ',', '.') }}</p>
                             <div class="d-flex">
-                                <a href="{{ route('admin.menu.edit', $menu->id) }}" class="btn btn-primary btn-sm me-2">Edit</a>
-                                <form action="{{ route('admin.menu.delete', $menu->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this item?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                </form>
+                                <a href="{{ route('admin.menu.edit', $menu->id) }}" class="btn btn-primary btn-sm me-2" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('{{ route('admin.menu.delete', $menu->id) }}')" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -51,6 +54,9 @@
     </div>
 </div>
 
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
 <style>
     .card:hover {
         box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
@@ -63,20 +69,37 @@
     .pagination {
         margin: 0;
     }
-    .pagination .page-item.active .page-link {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
     .pagination .page-link {
         border-radius: 0.25rem;
-    }
-    .pagination .page-link, .pagination .page-item.disabled .page-link {
-        color: #007bff;
-        border-color: #dee2e6;
     }
     .search-form {
         max-width: 400px;
         margin: auto;
     }
 </style>
+
+<script>
+    function confirmDelete(url) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to delete this menu item?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire(
+                    'Deleted!',
+                    'The menu item has been deleted.',
+                    'success'
+                ).then(() => {
+                    window.location.href = url;
+                });
+            }
+        });
+    }
+</script>
 @endsection
