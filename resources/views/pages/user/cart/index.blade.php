@@ -109,24 +109,39 @@
                         Prov. Banten 15415
                     </p>
                 </div>
-                <div class="mt-4">
-                    <h5>Pilih Metode Pembayaran</h5>
-                    <div class="form-group">
-                        <input type="radio" name="payment" id="qris" value="QRIS" class="btn-check">
-                        <label class="btn btn-outline-dark w-100 text-start" for="qris">QRIS</label>
-                    </div>
-                    <div class="form-group mt-2">
-                        <input type="radio" name="payment" id="transfer" value="Transfer Bank" class="btn-check">
-                        <label class="btn btn-outline-dark w-100 text-start" for="transfer">Transfer Bank</label>
-                    </div>
-                </div>
-                <form id="checkout-form" action="{{ route('user.transaction.store') }}" method="POST" class="mt-4">
-                    @csrf
-                    <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}">
-                    <input type="hidden" name="total_price" id="total_price" value="{{ $total }}">
-                    <input type="hidden" name="menu" id="menu" value="{{ json_encode($carts) }}">
-                    <button type="submit" class="btn btn-secondary w-100">Lanjut ke pembayaran</button>
-                </form>
+      <!-- Pilih Metode Pembayaran -->
+<div class="mt-4">
+    <h5>Pilih Metode Pembayaran</h5>
+    <div class="form-group">
+        <input type="radio" name="payment" id="qris" value="QRIS" disabled class="btn-check" required>
+        <label class="btn btn-outline-dark w-100 text-start" for="qris">QRIS</label>
+        <small class="text-danger">Pembayaran melalui QRIS saat ini belum tersedia</small>
+    </div>
+    <div class="form-group mt-2">
+        <input type="radio" name="payment" id="transfer" value="Transfer Bank" class="btn-check" required>
+        <label class="btn btn-outline-dark w-100 text-start" for="transfer">Transfer Bank</label>
+    </div>
+</div>
+
+<!-- Upload Bukti Pembayaran -->
+<form id="checkout-form" action="{{ route('user.transaction.store') }}" method="POST" enctype="multipart/form-data" class="mt-4">
+    @csrf
+<div class="mt-4">
+    <h5>Upload Bukti Pembayaran</h5>
+    <div class="input-group">
+        <input type="file" class="form-control" id="payment_proof" name="payment_proof" accept=".jpg,.jpeg,.png" required>
+    </div>
+</div>
+
+<!-- Tombol Lanjut ke pembayaran -->
+
+    <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}">
+    <input type="hidden" name="total_price" id="total_price" value="{{ $total }}">
+    <input type="hidden" name="menu" id="menu" value="{{ json_encode($carts) }}">
+
+    <button type="submit" class="btn btn-secondary w-100">Lanjut ke pembayaran</button>
+</form>
+
             </div>
         </div>
     </div>
@@ -135,49 +150,39 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Handle item removal confirmation
-        document.querySelectorAll('.remove-item').forEach(item => {
-            item.addEventListener('click', function(event) {
-                event.preventDefault();
-                const url = this.getAttribute('data-url');
-                Swal.fire({
-                    title: 'Konfirmasi',
-                    text: 'Anda yakin ingin menghapus item ini dari keranjang?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, Hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire('Berhasil', 'Item berhasil dihapus dari keranjang', 'success')
-                            .then(() => {
-                                window.location.href = url;
-                            });
-                    }
-                });
-            });
-        });
-
-        // Handle checkout confirmation
+        // Handle checkout form submission
         document.getElementById('checkout-form').addEventListener('submit', function(event) {
+            // Prevent form submission
             event.preventDefault();
+
+            // Check if payment proof file is selected
+            const paymentProofInput = document.getElementById('payment_proof');
+            if (!paymentProofInput.files || paymentProofInput.files.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Silakan pilih file bukti pembayaran terlebih dahulu!',
+                });
+                return;
+            }
+
+            // If payment proof is selected, proceed with confirmation
             Swal.fire({
                 title: 'Konfirmasi',
-                text: 'Anda yakin akan melanjutkan ke pembayaran?',
+                text: 'Anda yakin ingin melanjutkan pembayaran?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Ya, Lanjutkan!',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.fire('Berhasil', 'Anda akan dialihkan ke halaman pembayaran', 'success')
-                        .then(() => {
+                    // If confirmed, submit the form
                     this.submit();
-                });
                 }
             });
         });
     });
 </script>
+
 
 @endsection

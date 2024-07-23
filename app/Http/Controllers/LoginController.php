@@ -35,9 +35,9 @@ class LoginController extends Controller
 
             // Redirect based on user role
             if ($user->role_id === 1) { // Assuming 1 is the role_id for admin
-                return redirect()->route('admin.index');
+                return redirect()->route('admin.index')->with('login_success', 'Login berhasil');
             } else if ($user->role_id === 2) { // Assuming 2 is the role_id for user
-                return redirect()->route('user.index');
+                return redirect()->route('user.index')->with('login_success', 'Login berhasil');
             } else {
                 // Handle unexpected roles
                 return redirect('/')->withErrors([
@@ -48,8 +48,8 @@ class LoginController extends Controller
 
         // Authentication failed, redirect back with an error message
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+            'email' => 'Maaf, email atau password salah.',
+        ])->withInput('email');
     }
 
     /**

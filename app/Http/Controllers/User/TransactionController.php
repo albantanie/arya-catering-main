@@ -11,29 +11,43 @@ class TransactionController extends Controller
 {
     public function index()
     {
-        $data = [
-            'transactions' => Transaction::where('user_id', auth()->user()->id)->get(),
-        ];
-        return view('pages.user.transaction.index', $data);
+        $transactions = Transaction::where('user_id', auth()->user()->id)->get();
+        
+        return view('pages.user.transaction.index', compact('transactions'));
     }
 
     public function store(Request $request)
     {
-        $rules = [
+        $request->validate([
             'user_id' => 'required|integer',
             'menu' => 'required|string',
-            // 'payment_proof' => 'required|integer',
+            'payment_proof' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // max 2MB
             'total_price' => 'required|integer',
-        ];
-        $validated = $request->validate($rules);
+        ]);
 
-        if ($validated) {
-            $validated['payment_proof'] = '';
-            $validated['status'] = 'PENDING';
-            Transaction::create($validated);
-            Cart::where('user_id', auth()->user()->id)->delete();
+        // Handle file upload
+        $paymentProofPath = null;
+        if ($request->hasFile('payment_proof')) {
+            $paymentProofPath = $request->file('payment_proof')->store('payment_proofs', 'public');
+            // Log the path for debugging
+            \Log::info('Uploaded payment proof path: ' . $paymentProofPath);
+        } else {
+            return redirect()->back()->with('error', 'Bukti pembayaran tidak ditemukan.');
         }
 
-        return redirect()->route('user.index');
+        // Save transaction data
+        $transaction = new Transaction();
+        $transaction->user_id = $request->user_id;
+        $transaction->menu = $request->menu;
+        $transaction->payment_proof = $paymentProofPath; // Assign uploaded file path
+        $transaction->total_price = $request->total_price;
+        $transaction->status = 'PENDING';
+        $transaction->save();
+
+        // Clear shopping cart after checkout
+        Cart::where('user_id', auth()->user()->id)->delete();
+
+        return redirect()->route('user.index')->with('success', 'Pembelian berhasil! Mohon tunggu konfirmasi dari kami.');
     }
 }
+

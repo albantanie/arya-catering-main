@@ -2,6 +2,9 @@
 
 @section('head')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Include Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
 @endsection
 
 @section('content')
@@ -20,6 +23,7 @@
                     <th>Menu</th>
                     <th>Total</th>
                     <th>Status</th>
+                    <th>Bukti Pembayaran</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -33,6 +37,13 @@
                             <td>{{ $item->menu->name }}</td>
                             <td>Rp{{ number_format($item->menu->price * $item->amount, 2, ',', '.') }}</td>
                             <td>{{ $transaction->status }}</td>
+                            <td>
+                                @if ($transaction->payment_proof)
+                                    <img src="{{ asset('storage/' . $transaction->payment_proof) }}" alt="Bukti Pembayaran" width="100" class="img-thumbnail payment-proof" data-toggle="modal" data-target="#imageModal" data-src="{{ asset('storage/' . $transaction->payment_proof) }}">
+                                @else
+                                    <span class="text-muted">Belum ada bukti pembayaran</span>
+                                @endif
+                            </td>
                             <td>
                                 @if ($transaction->status === 'PENDING')
                                     <form action="{{ route('admin.transaction.approve', $transaction->id) }}" method="POST" class="d-inline-block">
@@ -54,8 +65,32 @@
         </table>
     </div>
 
+    <!-- Modal for image preview -->
+    <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Bukti Pembayaran</h5>
+                    <button type="button" class="close btn" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" src="" alt="Bukti Pembayaran" class="img-fluid">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <!-- Include jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script>
         document.querySelectorAll('.approve-btn').forEach(button => {
@@ -97,6 +132,15 @@
                         form.submit();
                     }
                 });
+            });
+        });
+
+        // Handle image modal
+        document.querySelectorAll('.payment-proof').forEach(image => {
+            image.addEventListener('click', function() {
+                const src = this.getAttribute('data-src');
+                const modalImage = document.getElementById('modalImage');
+                modalImage.src = src;
             });
         });
     </script>
