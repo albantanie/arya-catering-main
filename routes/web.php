@@ -24,6 +24,7 @@ Route::namespace('App\Http\Controllers')->group(function () {
         // User routes
         Route::middleware('isUser')->namespace('User')->prefix('user')->group(function () {
             Route::get('/', 'HomeController@index')->name('user.index');
+            Route::get('menu/{id}', 'HomeController@show')->name('user.menu.show');
 
             Route::get('/transaction', 'TransactionController@index')->name('user.transaction.index');
             Route::post('/transaction', 'TransactionController@store')->name('user.transaction.store');

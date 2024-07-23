@@ -1,26 +1,28 @@
 @extends('layouts.user')
 
 @section('content')
-<div class="container-fluid py-4" style="background-color: #f3f4f5;">
+<div class="container-fluid py-4">
     <div class="container">
         <!-- Search Form -->
         <div class="mb-4">
             <form action="{{ route('user.index') }}" method="GET" class="search-form">
                 <div class="input-group">
-                    <input type="text" name="search" class="form-control" placeholder="Search for a menu item" value="{{ request('search') }}">
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <form class="d-flex mx-auto" action="{{route('user.index')}}" role="search">
+                        <input class="form-control" type="search" placeholder="Search for a menu item" aria-label="Search">
+                        <button class="btn btn-outline-success" value="{{ request('search') }}" type="submit">Search</button>
+                    </form>
                 </div>
             </form>
         </div>
         <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
             @foreach ($menus as $menu)
                 <div class="col">
-                    <div class="card h-100 border-0 shadow-sm">
+                    <div class="card h-100 border-0 shadow">
                         <img src="/storage/{{ $menu->image }}" class="card-img-top" alt="{{ $menu->name }}" style="object-fit: cover; height: 200px;">
                         <div class="card-body d-flex flex-column">
                             <h6 class="card-title text-truncate">{{ $menu->name }}</h6>
                             <p class="card-text text-primary fw-bold mt-auto mb-2">Rp{{ number_format($menu->price, 2, ',', '.') }}</p>
-                        <form class="add-to-cart-form" action="{{ route('user.cart.add') }}" method="POST">
+                            <form class="add-to-cart-form" action="{{ route('user.cart.add') }}" method="POST">
                                 @csrf
                                 @auth
                                 <input type="hidden" name="user_id" id="user_id" value="{{ auth()->user()->id }}">
@@ -58,15 +60,13 @@
         margin: 0;
     }
     .pagination .page-item.active .page-link {
-        background-color: #007bff;
-        border-color: #007bff;
+      
     }
     .pagination .page-link {
         border-radius: 0.25rem;
     }
     .pagination .page-link, .pagination .page-item.disabled .page-link {
-        color: #007bff;
-        border-color: #dee2e6;
+       
     }
     .search-form {
         max-width: 400px;
@@ -75,27 +75,45 @@
 </style>
 
 @if (!auth()->check())
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const cartForms = document.querySelectorAll('.add-to-cart-form');
+            const searchForm = document.querySelector('.search-form');
+
+            // Handle cart forms submission
             cartForms.forEach(form => {
                 form.addEventListener('submit', function(event) {
                     event.preventDefault();
-                    // Show SweetAlert confirmation
                     Swal.fire({
                         title: 'Login Required',
-                        text: 'You need to log in first to add items to your cart.',
-                        icon: 'info',
+                        text: 'You need to log in first',
+                        icon: 'warning',
                         showCancelButton: true,
                         confirmButtonText: 'Login',
                         cancelButtonText: 'Cancel'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // Redirect to login page
                             window.location.href = "{{ route('login') }}?redirect=" + encodeURIComponent(window.location.href);
                         }
                     });
+                });
+            });
+
+            // Handle search form submission
+            searchForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                Swal.fire({
+                    title: 'Login Required',
+                    text: 'You need to log in first',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Login',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = "{{ route('login') }}?redirect=" + encodeURIComponent(window.location.href);
+                    }
                 });
             });
         });

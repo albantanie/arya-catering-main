@@ -83,6 +83,29 @@
 <!-- SweetAlert JS -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
+
+@if(session('login_success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: '{{ session('login_success') }}',
+        showConfirmButton: true
+    });
+</script>
+@endif
+
+@if(session('logout_success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Logged Out',
+        text: '{{ session('logout_success') }}',
+        showConfirmButton: true
+    });
+</script>
+@endif
+
 @if($errors->any())
 <script>
     Swal.fire({

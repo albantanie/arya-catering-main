@@ -1,5 +1,9 @@
 @extends('layouts.admin')
 
+@section('head')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+@endsection
+
 @section('content')
     <h3>Daftar Transaksi</h3>
     @if (session('success'))
@@ -11,7 +15,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>No</th> <!-- Updated to reflect sequential number -->
+                    <th>No</th>
                     <th>User</th>
                     <th>Menu</th>
                     <th>Total</th>
@@ -31,13 +35,13 @@
                             <td>{{ $transaction->status }}</td>
                             <td>
                                 @if ($transaction->status === 'PENDING')
-                                    <form action="{{ route('admin.transaction.approve', $transaction->id) }}" method="POST" style="display:inline-block;">
+                                    <form action="{{ route('admin.transaction.approve', $transaction->id) }}" method="POST" class="d-inline-block">
                                         @csrf
-                                        <button type="submit" class="btn btn-success">Approve</button>
+                                        <button type="button" class="btn btn-success approve-btn" data-id="{{ $transaction->id }}">Approve</button>
                                     </form>
-                                    <form action="{{ route('admin.transaction.reject', $transaction->id) }}" method="POST" style="display:inline-block;">
+                                    <form action="{{ route('admin.transaction.reject', $transaction->id) }}" method="POST" class="d-inline-block">
                                         @csrf
-                                        <button type="submit" class="btn btn-danger">Reject</button>
+                                        <button type="button" class="btn btn-danger reject-btn" data-id="{{ $transaction->id }}">Reject</button>
                                     </form>
                                 @else
                                     {{ $transaction->status }}
@@ -49,4 +53,51 @@
             </tbody>
         </table>
     </div>
+
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
+    <script>
+        document.querySelectorAll('.approve-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('form');
+                const id = this.getAttribute('data-id');
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: `Apakah Anda benar-benar ingin menyetujui transaksi ini?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, setujui!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+
+        document.querySelectorAll('.reject-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const form = this.closest('form');
+                const id = this.getAttribute('data-id');
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: `Apakah Anda benar-benar ingin menolak transaksi nomor ini?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, tolak!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

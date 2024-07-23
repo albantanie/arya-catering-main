@@ -30,6 +30,9 @@ class LoginController extends Controller
             // Get the authenticated user
             $user = Auth::user();
 
+            // Set a success flash message
+            $request->session()->flash('login_success', 'Login successful! Welcome back.');
+
             // Redirect based on user role
             if ($user->role_id === 1) { // Assuming 1 is the role_id for admin
                 return redirect()->route('admin.index');
@@ -61,7 +64,7 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Redirect to the home page
-        return redirect('/');
+        // Redirect to the home page with a logout success message
+        return redirect('/')->with('logout_success', 'You have been logged out successfully.');
     }
 }
